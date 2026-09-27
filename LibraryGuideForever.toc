@@ -1,0 +1,16 @@
+## Interface: 16001
+## Title: Library Guide Forever
+## Notes: A personal book journal for the Philanthropist's Ring. /library
+## Author: Videocat
+## Version: 0.1.2
+## SavedVariablesPerCharacter: LibraryGuideForeverDB
+
+Libs\LibStub.lua
+Libs\CallbackHandler-1.0.lua
+Libs\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0.lua
+Books.lua
+Tracking.lua
+Rewards.lua
+Window.lua
+Minimap.lua
