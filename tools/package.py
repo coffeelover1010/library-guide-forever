@@ -1,6 +1,7 @@
 """Build an allowlisted install ZIP and verify every archived file."""
 from pathlib import Path
 import hashlib
+import re
 import zipfile
 
 root = Path(__file__).resolve().parents[1]
@@ -10,7 +11,8 @@ for line in toc.read_text(encoding='utf-8-sig').splitlines():
     if line.strip() and not line.startswith('#'):
         files.append(line.strip().replace('\\', '/'))
 assert len(files) == len(set(files))
-out = root / 'dist' / 'LibraryGuideForever-0.1.2.zip'
+version = re.search(r'^## Version:\s*(\S+)', toc.read_text(encoding='utf-8-sig'), re.MULTILINE).group(1)
+out = root / 'dist' / f'LibraryGuideForever-{version}.zip'
 out.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
     for name in files:

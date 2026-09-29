@@ -6,7 +6,7 @@ A character-specific library journal for the Philanthropist's Ring, built for th
 
 Open with `/library` or `/bookguide`. Drag the window to move it. Escape closes it. `/library resetpos` recentres it.
 
-The standard LibDBIcon minimap button uses a book icon. Left-click to open or close the journal; drag to reposition it. Position and visibility are saved per character. `/library minimap` restores a hidden button. LibDataBroker displays can also show the launcher.
+The standard LibDBIcon minimap button uses a book icon. Left-click to open or close the journal; drag to reposition it. Position and visibility are saved per character. `/library minimap` toggles the button; `/library minimap hide` hides it and `/library minimap show` restores it. `/library` opens the journal even when its icon is hidden. LibDataBroker displays can also show the launcher.
 
 The rewards strip shows both necklace choices at 10 books and both ring choices at 20. Hover for the game's item tooltip, click to inspect, or Shift-click to insert the item link into an open chat box. Field Researcher's Loop is labelled Rogue-only. Uncached items request their data from the game; chat linking waits for a real client item link.
 

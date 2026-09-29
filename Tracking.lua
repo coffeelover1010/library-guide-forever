@@ -95,8 +95,11 @@ end)
 SLASH_LIBRARYGUIDEFOREVER1="/library"
 SLASH_LIBRARYGUIDEFOREVER2="/bookguide"
 SlashCmdList.LIBRARYGUIDEFOREVER=function(msg)
+ msg=(msg or ""):lower():match("^%s*(.-)%s*$")
  if msg=="scan" then A.Scan(); A.Print("Inventory and completed quests checked. Open your bank once to refresh bank counts.")
- elseif msg=="minimap" then A.ShowMinimap()
+ elseif msg=="minimap" then A.SetMinimapShown(A.db.minimap.hide)
+ elseif msg=="minimap show" or msg=="minimap on" then A.ShowMinimap()
+ elseif msg=="minimap hide" or msg=="minimap off" then A.SetMinimapShown(false)
  elseif msg=="resetpos" then if A.window then A.window:ClearAllPoints(); A.window:SetPoint("CENTER") end; db.position=nil
  else A.Toggle() end
 end

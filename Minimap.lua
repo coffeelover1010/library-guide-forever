@@ -1,10 +1,14 @@
 local name, A = ...
 local icons
 
-function A.ShowMinimap()
+function A.SetMinimapShown(shown)
  if not icons then return end
- A.db.minimap.hide = false
- icons:Show(name)
+ A.db.minimap.hide = not shown
+ icons[shown and "Show" or "Hide"](icons, name)
+end
+
+function A.ShowMinimap()
+ A.SetMinimapShown(true)
 end
 
 local events = CreateFrame("Frame")
@@ -24,6 +28,7 @@ events:SetScript("OnEvent", function(self)
    tooltip:AddLine("Library Guide Forever", 0.88, 0.73, 0.44)
    tooltip:AddLine("Left-click to open or close your book journal.", 1, 1, 1)
    tooltip:AddLine("Drag to move around the minimap.", 1, 1, 1)
+   tooltip:AddLine("/library minimap hide to hide this icon.", 1, 1, 1)
    if A.progress then
     tooltip:AddLine(A.progress.donated .. " / 20 confirmed donations", 0.43, 0.86, 0.62)
    end
