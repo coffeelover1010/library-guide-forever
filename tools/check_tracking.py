@@ -25,14 +25,15 @@ for filename in ('Books.lua', 'Tracking.lua', 'Window.lua'):
         lua.execute(source, 'LibraryGuideForever', lua.globals().A)
 lua.execute('''
 fire("ADDON_LOADED","LibraryGuideForever")
-assert(#A.books==22)
+assert(#A.books==40)
 local ids,qs={},{}
 for _,b in ipairs(A.books) do
- assert(not ids[b[1]] and not qs[b[2]],"duplicate book or quest")
- ids[b[1]]=true; qs[b[2]]=true
+ assert(not ids[b[1]] and (not b[2] or not qs[b[2]]),"duplicate book or quest")
+ ids[b[1]]=true; if b[2] then qs[b[2]]=true end
+ assert(type(A.BookLocation(b))=="string")
 end
 assert(A.progress.donated==0 and A.progress.owned==0)
-local eligible=0; for _,b in ipairs(A.books) do if A.Eligible(b) then eligible=eligible+1 end end
+local eligible=0; for _,b in ipairs(A.books) do if A.OnRoute(b) then eligible=eligible+1 end end
 assert(eligible==20,"Alliance route should have 20 books")
 bag[203755]=1; fire("BAG_UPDATE_DELAYED")
 assert(A.state[203755].status=="bags" and A.progress.owned==1)
@@ -52,7 +53,18 @@ A.ToggleManual(b); assert(A.state[203754].status=="missing" and A.progress.manua
 fire("QUEST_TURNED_IN",79091)
 assert(A.state[203754].status=="donated" and A.progress.donated==2)
 A.ToggleManual(b); assert(A.progress.manual==0,"cannot override confirmed donation")
-completed[81947]=true; A.Scan(); assert(A.progress.other==1 and A.progress.donated==3)
+completed[81947]=true; A.Scan(); assert(A.progress.other==0 and A.progress.donated==3)
+assert(A.state[220345].status=="donated","expanded quest must count exactly once")
+assert(A.Recommendation(A.byItem[220345])=="NOT RECOMMENDED")
+assert(A.Recommendation(A.byItem[207972])=="HORDE ONLY")
+assert(A.Recommendation(A.byItem[210177])=="NOT RECOMMENDED","unknown must not mean impossible")
+bag[210177]=1; A.Scan()
+assert(A.state[210177].status=="bags" and A.progress.owned==1,"unverified hand-ins must not inflate owned goal progress")
+assert(not A.Completed(false))
+faction="Horde"
+assert(A.Recommendation(A.byItem[203754])=="ALLIANCE ONLY")
+assert(A.Recommendation(A.byItem[207972])=="")
+faction="Alliance"
 bag[207972]=1; A.Scan(); assert(A.progress.owned==1,"Horde-only book excluded from Alliance owned progress")
 completed[79536]=true; A.Scan(); assert(A.progress.reward)
 completed={}; fire("PLAYER_ENTERING_WORLD")

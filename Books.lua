@@ -26,12 +26,31 @@ A.books = {
  {215822,79952,"RwlRwlRwlRwl!","Dustwallow Marsh",1445,57.2,20.8,"Witch Hill. Look for a Waterlogged Book. High-level enemies."},
  {215817,79950,"Demons and You","Desolace",1443,55.1,26.2,"Alternative to a Horde-only donation. Thunder Axe Fortress. High-level enemies; this is not a guaranteed safe pickup.",alternative=true},
  {215820,79951,"Mummies: A Guide to the Unsavory Undead","Badlands",1418,56.7,39.9,"Alternative to a Horde-only donation. Look for Scrolls. High-level enemies; this is not a guaranteed safe pickup.",alternative=true},
+ -- Extended catalogue checked 2026-09-29. false means no verified Forever
+ -- donation quest: never substitute a Season of Discovery quest ID.
+ {210177,false,"Ataeric: On Arcane Curiosities","Silverpine Forest",nil,nil,nil,"The old Sepulcher location is disputed. No reliable Forever pickup or donation quest confirmed.",caution="Location and hand-in unconfirmed"},
+ {215824,false,"A Luddite's Guide to Caring for Your Demonic Pet","Swamp of Sorrows",1435,61.3,22.3,"Reported at Fallow Sanctuary. Dangerous at low level; Forever donation quest unconfirmed.",caution="Dangerous; hand-in unconfirmed"},
+ {220345,81947,"Sanguine Sorcery","Swamp of Sorrows",1435,70.0,51.0,"Reported atop the Temple of Atal'Hakkar. Dangerous travel for the level-20 reward route.",caution="High-level area"},
+ {220346,81949,"Legends of the Tidesages","Tanaris",1446,72.7,47.8,"Reported at Lost Rigger Cove. Dangerous travel for the level-20 reward route.",caution="High-level area"},
+ {220347,false,"The Liminal and the Arcane","Feralas",nil,nil,nil,"Jademir Lake reports are unsettled. No reliable Forever pickup or donation quest confirmed.",caution="Location and hand-in unconfirmed"},
+ {220348,81952,"Everyday Etiquette","Azshara",1447,20.7,62.0,"Reported at Haldarr Encampment. Dangerous travel for the level-20 reward route.",caution="High-level area"},
+ {220349,81953,"Stonewrought Design","Blackrock Mountain",nil,nil,nil,"Reported near Franclorn Forgewright's altar. Map coordinates are disputed; no waypoint provided.",caution="Dangerous; location unconfirmed"},
+ {220350,81954,"Venomous Journeys","The Hinterlands",1425,36.0,72.8,"Reported at Shadra'Alor. Dangerous travel for the level-20 reward route.",caution="High-level area"},
+ {220352,81955,"A Mind of Metal","Searing Gorge",1427,37.8,49.4,"Reported in the Cauldron. Dangerous travel for the level-20 reward route.",caution="High-level area"},
+ {220353,81956,"Conjurer's Codex","Blasted Lands",1419,55.4,32.2,"Reported in the Blasted Lands. Dangerous travel for the level-20 reward route.",caution="High-level area"},
+ {228132,false,"Undead Potatoes","Western Plaguelands",1422,38.3,54.6,"Reported at Felstone Field. Dangerous at low level; Forever donation quest unconfirmed.",caution="Dangerous; hand-in unconfirmed"},
+ {228133,false,"Magma or Lava?","Blackrock Mountain",nil,nil,nil,"Reported on the approach to Blackrock Depths. Coordinates are unsettled; Forever donation quest unconfirmed.",caution="Location and hand-in unconfirmed"},
+ {228134,false,"Northern Kalimdor - A Comprehensive Guide","Felwood",1448,65.2,3.3,"Reported in Timbermaw Hold. Dangerous at low level; Forever donation quest unconfirmed.",caution="Dangerous; hand-in unconfirmed"},
+ {228135,false,"A Study of the Light","Eastern Plaguelands",1423,71.8,48.2,"Reported at Light's Hope Chapel. Dangerous at low level; Forever donation quest unconfirmed.",caution="Dangerous; hand-in unconfirmed"},
+ {228136,false,"Ka-Boom!","Winterspring",1452,60.7,37.7,"Reported in Everlook. Dangerous at low level; Forever donation quest unconfirmed.",caution="Dangerous; hand-in unconfirmed"},
+ {228138,false,"The Knight and the Lady","Eastern Plaguelands",nil,nil,nil,"No reliable Forever pickup or donation quest confirmed. Do not plan a collection trip around this entry.",caution="Location and hand-in unconfirmed"},
+ {228140,false,"Scourge: Undead Menace or Misunderstood?","Eastern Plaguelands",1423,31.3,21.0,"Reported outside Stratholme. Dangerous at low level; Forever donation quest unconfirmed.",caution="Dangerous; hand-in unconfirmed"},
+ {228141,false,"Necromancy 101","Western Plaguelands",1422,69.4,72.8,"Reported at Caer Darrow, outside Scholomance. Dangerous at low level; Forever donation quest unconfirmed.",caution="Dangerous; hand-in unconfirmed"},
 }
--- Other donation quests exposed by the current Alliance librarian. Count these
--- toward the total even when the player completed books outside this route.
-A.extraQuests = {81947,81949,81952,81953,81954,81955,81956}
+-- Previously counted outside-route quests now have full records above.
+A.extraQuests = {}
 A.rewardQuest = 79536
 A.byItem, A.byQuest = {}, {}
 for i, b in ipairs(A.books) do
- b.index=i; A.byItem[b[1]]=b; A.byQuest[b[2]]=b
+ b.index=i; A.byItem[b[1]]=b; if b[2] then A.byQuest[b[2]]=b end
 end

@@ -18,13 +18,15 @@ The rewards strip shows both necklace choices at 10 books and both ring choices 
 - Remembers observed ownership as **Seen before** if the book disappears without a confirmed donation. Those books remain in **To find**.
 - Manual donation marks are reversible and shown separately. They never inflate the confirmed progress bar.
 - Progress is saved per character. Copies of Rumi count once.
-- Also counts seven additional donation quests listed by the Alliance librarian outside this route. This is not a complete catalogue of every possible book. The completed ring reward quest is checked independently.
+- Tracks all 40 known book items. Seven previously hidden donation quests now have full entries and still count only once. The completed ring reward quest is checked independently. Books without a verified Forever quest track ownership and manual marks, but do not inflate confirmed donations or the owned-to-goal count.
 
 ## Guide
 
-22 unique books: the supplied 20-book list plus Desolace and Badlands alternatives. **Route** excludes the two Horde-only donation quests for Alliance, leaving 20 candidates. **All** shows everything. Filters and search narrow the list. Select a book for its notes; **Show on map** opens the zone and uses a native waypoint when supported, or TomTom if installed. Unsupported maps retain the written coordinates. Rumi also has a Thelsamar button. Wailing Caverns navigation targets the outdoor cave entrance; the interior coordinates are in the notes.
+40 unique books. **All** opens by default so the entire catalogue is visible. **Route** retains the original suggested route (20 candidates for Alliance). The 18 added entries are marked **Not recommended**, with reasons such as high-level travel, disputed locations, or unconfirmed hand-ins. These are recommendations for the level-20 reward route, not claims that a book cannot be collected. Ownership and donation states remain visible separately. Filters and search narrow the list. Select a book for its notes; **Show on map** opens the zone and uses a native waypoint when supported, or TomTom if installed. Unsettled locations have no map button or invented coordinates. Rumi also has a Thelsamar button. Wailing Caverns navigation targets the outdoor cave entrance; the interior coordinates are in the notes.
 
-The current Forever database lists Ta'zo (79094) and the Apothecary's Primer (79095) as Horde-only. Their items still appear in the journal. The original list's Swamp of Sorrows alternative is omitted because its current donation quest was not established. Ataeric is omitted because its beta location is disputed.
+**Horde only** appears for Alliance characters on Ta'zo and the Apothecary's Primer. **Alliance only** appears for Horde characters on Antonidas and Rumi. These labels describe the donation quest's faction restriction in the current Forever database. Ataeric and the Swamp of Sorrows alternative are included with warnings about uncertain locations or hand-ins.
+
+The expanded catalogue was checked on 29 September 2026 against the installed ItemDB Forever item names, the two Wowhead Forever librarian quest lists below, and community location reports at https://wowforevertools.com/books and https://foreverchanges.pro/library-books. Eleven entries have no verified Forever donation quest; no Season of Discovery quest IDs are substituted. Community locations are not locally verified in-game.
 
 ## Data and limits
 

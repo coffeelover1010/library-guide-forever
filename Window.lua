@@ -3,7 +3,7 @@ local gold={0.88,0.73,0.44}
 local statusText={missing="TO FIND",bags="IN BAGS",bank="IN BANK*",donated="TURNED IN",manual="MARKED BY YOU",seen="SEEN BEFORE",unknown="SCAN UNAVAILABLE"}
 local colors={missing={0.65,0.69,0.76},bags={0.42,0.83,0.96},bank={0.62,0.65,0.96},donated={0.43,0.86,0.62},manual={0.95,0.72,0.35},seen={0.85,0.65,0.42},unknown={0.95,0.5,0.4}}
 local filters={"Route","To find","Carried","Donated","All"}
-local filter="Route"
+local filter="All"
 local selected=A.books[1]
 local rows={}
 local function panel(parent,w,h,x,y,r,g,b)
@@ -29,7 +29,9 @@ end
 local function detail()
  local f=A.window; if not f then return end
  local b=selected; local s=A.state[b[1]] or {status="unknown"}
- f.bookTitle:SetText(b[3]); f.bookZone:SetText(b[4].."  |  "..string.format("%.1f, %.1f",b[6],b[7]))
+ f.bookTitle:SetText(b[3]); f.bookZone:SetText(A.BookLocation(b))
+ local recommendation,reason=A.Recommendation(b)
+ f.bookRecommendation:SetText(recommendation)
  f.bookStatus:SetText(statusText[s.status]); f.bookStatus:SetTextColor(unpack(colors[s.status]))
  local explanation="Not in your bags and no completed donation was detected."
  if s.status=="donated" then explanation="Your character's completed quest flag or observed turn-in confirms this donation."
@@ -39,18 +41,19 @@ local function detail()
  elseif s.status=="seen" then explanation="Seen in your inventory before, but not owned now. This does NOT confirm a donation; check with the librarian."
  elseif s.status=="unknown" then explanation="The inventory check is unavailable. Do not assume this book is missing." end
  f.bookNotes:SetText(b[8].."\n\n"..explanation)
- f.bookEvidence:SetText("Item "..b[1].."  /  Quest "..b[2].."\nCommunity location • checked 27 Sep 2026")
+ f.bookEvidence:SetText("Item "..b[1].."  /  "..(b[2] and ("Quest "..b[2]) or "Hand-in unconfirmed").."\nCommunity reports • catalogue checked 29 Sep 2026")
+ f.mapButton:SetEnabled(b[5]~=nil and b[6]~=nil and b[7]~=nil)
  f.manual:SetText(s.status=="manual" and "Undo my mark" or "Mark donated manually")
  f.manual:SetEnabled(s.status~="donated")
  f.alternate:SetShown(b.alt~=nil)
- f.detailHint:SetText(A.Eligible(b) and "Mark only if you remember handing this book in. Manual marks can be undone." or "Faction restriction: this donation is not included in your suggested route.")
+ f.detailHint:SetText(reason~="" and reason or "Mark only if you remember handing this book in. Manual marks can be undone.")
 end
 local function match(b)
  local s=A.state[b[1]] or {status="unknown"}
  local q=A.window.search:GetText():lower()
  if q~="" and not (b[3].." "..b[4]):lower():find(q,1,true) then return false end
  if filter=="All" then return true end
- if not A.Eligible(b) then return false end
+ if filter=="Route" then return A.OnRoute(b) end
  if filter=="To find" then return s.status=="missing" or s.status=="seen" or s.status=="unknown" end
  if filter=="Carried" then return s.status=="bags" or s.status=="bank" end
  if filter=="Donated" then return s.status=="donated" or s.status=="manual" end
@@ -72,13 +75,14 @@ function A.Refresh()
   if b then
    r.book=b; r:Show()
    local s=A.state[b[1]] or {status="unknown"}
-   r.title:SetText(b[3]); r.zone:SetText(b[4].."  "..string.format("%.1f, %.1f",b[6],b[7]))
+   r.title:SetText(b[3]); r.zone:SetText(A.BookLocation(b))
+   local recommendation=A.Recommendation(b); r.recommendation:SetText(recommendation)
    r.status:SetText(statusText[s.status]); r.status:SetTextColor(unpack(colors[s.status]))
    r.number:SetText(string.format("%02d",b.index))
    r.bg:SetColorTexture(b==selected and 0.21 or 0.085,b==selected and 0.18 or 0.10,b==selected and 0.12 or 0.13,1)
   else r:Hide() end
  end
- f.child:SetHeight(math.max(1,#visible*55))
+ f.child:SetHeight(math.max(1,#visible*69))
  f.empty:SetShown(#visible==0)
  f.listCount:SetText(#visible.." books  •  "..filter..(p.other>0 and ("  •  +"..p.other.." donations outside route") or ""))
  for _,b in ipairs(f.filterButtons) do b:GetFontString():SetTextColor(unpack(b.label==filter and gold or {0.8,0.8,0.8})) end
@@ -122,17 +126,20 @@ local function create()
  f.scroll=CreateFrame("ScrollFrame",nil,f,"UIPanelScrollFrameTemplate"); f.scroll:SetPoint("TOPLEFT",22,-279); f.scroll:SetSize(467,290)
  f.child=CreateFrame("Frame",nil,f.scroll); f.child:SetSize(467,1); f.scroll:SetScrollChild(f.child)
  for i=1,#A.books do
-  local r=CreateFrame("Button",nil,f.child); rows[i]=r; r:SetSize(467,53); r:SetPoint("TOPLEFT",0,-(i-1)*55)
+  local r=CreateFrame("Button",nil,f.child); rows[i]=r; r:SetSize(467,67); r:SetPoint("TOPLEFT",0,-(i-1)*69)
   r.bg=r:CreateTexture(nil,"BACKGROUND"); r.bg:SetAllPoints()
   r.number=text(r,13,10,-17,27,gold)
   r.title=text(r,12,43,-7,412); r.title:SetHeight(15); r.title:SetWordWrap(false)
-  r.zone=text(r,10,43,-31,272,{0.65,0.7,0.78})
-  r.status=text(r,9,313,-32,145); r.status:SetJustifyH("RIGHT")
+  r.recommendation=text(r,9,43,-26,412,{0.95,0.65,0.35})
+  r.zone=text(r,10,43,-47,272,{0.65,0.7,0.78}); r.zone:SetHeight(14); r.zone:SetWordWrap(false)
+  r.status=text(r,9,313,-48,145); r.status:SetJustifyH("RIGHT")
   r:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight","ADD")
   r:SetScript("OnClick",function(self) selected=self.book; A.Refresh() end)
   r:SetScript("OnEnter",function(self)
    GameTooltip:SetOwner(self,"ANCHOR_RIGHT"); GameTooltip:SetText(self.book[3],1,0.85,0.5)
-   GameTooltip:AddLine(self.book[4].." — "..self.book[6]..", "..self.book[7],1,1,1)
+   GameTooltip:AddLine(A.BookLocation(self.book),1,1,1)
+   local recommendation,reason=A.Recommendation(self.book)
+   if recommendation~="" then GameTooltip:AddLine(recommendation..": "..reason,1,0.65,0.35,true) end
    GameTooltip:AddLine(self.book[8],0.8,0.8,0.8,true); GameTooltip:Show()
   end)
   r:SetScript("OnLeave",function() GameTooltip:Hide() end)
@@ -143,9 +150,10 @@ local function create()
  f.bookTitle=text(d,19,18,-37,365,gold); f.bookTitle:SetHeight(70)
  f.bookZone=text(d,12,18,-115,365)
  f.bookStatus=text(d,12,18,-142,365)
- f.bookNotes=text(d,12,18,-170,365); f.bookNotes:SetHeight(138); f.bookNotes:SetSpacing(3)
+ f.bookRecommendation=text(d,11,18,-164,365,{0.95,0.65,0.35})
+ f.bookNotes=text(d,12,18,-185,365); f.bookNotes:SetHeight(128); f.bookNotes:SetSpacing(3)
  f.bookEvidence=text(d,10,18,-320,365,{0.62,0.59,0.52})
- button(d,"Show on map",148,18,-350,function() A.ToBook(selected) end)
+ f.mapButton=button(d,"Show on map",148,18,-350,function() A.ToBook(selected) end)
  f.alternate=button(d,"Thelsamar location",195,180,-350,function() A.ToBook(selected,true) end)
  f.manual=button(f,"Mark donated manually",205,532,-583,function() A.ToggleManual(selected) end)
  button(f,"Librarian",96,742,-583,A.Librarian)

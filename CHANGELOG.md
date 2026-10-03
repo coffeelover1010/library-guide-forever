@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4
+
+- Add 18 missing books for a 40-book catalogue, shown through All by default.
+- Label added entries Not recommended with reasons; label faction-restricted donations Horde only or Alliance only.
+- Keep ownership and donation states separate from recommendations. Unverified hand-ins do not inflate progress.
+- Promote seven existing extra quest counters to full book entries without double-counting.
+- Disable map targets for unsettled locations instead of inventing coordinates.
+
 ## 0.1.3
 
 - Toggle the minimap icon with `/library minimap`.

@@ -7,10 +7,22 @@ local function safe(fn, ...)
  if ok then return value end
 end
 function A.Completed(id)
+ if not id then return false end
  return safe(C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted, id) == true
 end
 function A.Eligible(b)
  return not b.faction or b.faction == UnitFactionGroup("player")
+end
+function A.Recommendation(b)
+ if not A.Eligible(b) then return b.faction:upper().." ONLY", "Donation is "..b.faction.."-only in the current Forever database." end
+ if b.caution then return "NOT RECOMMENDED", b.caution end
+ return "", ""
+end
+function A.OnRoute(b)
+ return A.Eligible(b) and not b.caution
+end
+function A.BookLocation(b)
+ return b[4]..(b[6] and b[7] and ("  "..string.format("%.1f, %.1f",b[6],b[7])) or "  / location unconfirmed")
 end
 function A.Scan()
  if not db then return end
@@ -30,8 +42,8 @@ function A.Scan()
   local status = "missing"
   if done then status="donated"; donated=donated+1
   elseif record.manual then status="manual"; manual=manual+1
-  elseif bags and bags > 0 then status="bags"; if A.Eligible(b) then owned=owned+1 end
-  elseif total and bags and total > bags then status="bank"; if A.Eligible(b) then owned=owned+1 end
+  elseif bags and bags > 0 then status="bags"; if A.Eligible(b) and b[2] then owned=owned+1 end
+  elseif total and bags and total > bags then status="bank"; if A.Eligible(b) and b[2] then owned=owned+1 end
   elseif bags == nil then status="unknown"
   elseif record.seen then status="seen" end
   A.state[id]={status=status,bags=bags,total=total,record=record}
@@ -70,6 +82,7 @@ function A.Navigate(mapID, x, y, title, expectedZone)
  A.Print(title..": "..(expectedZone or "").." "..x..", "..y..(pinned and " (waypoint set)" or " (coordinates; this client has no supported waypoint)"))
 end
 function A.ToBook(b, alternate)
+ if not b[5] or not b[6] or not b[7] then A.Print("No reliable map target for "..b[3]..". See the field notes."); return end
  if alternate and b.alt then local p=b.alt; A.Navigate(p[1],p[2],p[3],b[3],p[4])
  else A.Navigate(b[5],b[6],b[7],b[3],b[4]) end
 end
